@@ -3,7 +3,10 @@ tag images with days after inputed date
 
 using python3
 Dependencies
-  *PIL
+
+ PIL
+ cv2
+ imutils
   
 how to use
 
