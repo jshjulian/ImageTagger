@@ -22,3 +22,5 @@ im.slideshow('slideshow', seconds_per_image = 1, fps=60)
 
 ```
 will save a video ('slideshow.avi') of the tagged images
+
+can only make slideshows with pictures with date metadata
