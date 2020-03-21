@@ -2,8 +2,9 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw 
 import PIL.ExifTags
+import cv2, numpy, imutils
 
-from os import listdir, getcwd
+from os import listdir
 from os.path import isfile, join
 import time
 from datetime import datetime, timedelta
@@ -95,16 +96,41 @@ class ImageTagger():
 
 	def tag_and_show(self):
 		self._show_pics(self._tag_images(self._get_images()))
+
+	def slideshow(self, outfile_name, seconds_per_image = 1, fps=60):
+	    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+
+	    x = 0
+	    y = 0
+	    list_of_pics = self._tag_images(self._get_images())
+	    for pic in list_of_pics:
+	    	if (pic.size[0] > x):
+	    		x = pic.size[0]
+	    	if (pic.size[1] > y):
+	    		y = pic.size[1]
+	    vw = cv2.VideoWriter(outfile_name + '.avi', fourcc, fps, (x,y))
+	    
+
+	    for pic in list_of_pics:
+	    	print (pic)
+	    	l_img = numpy.zeros((y,x,3), numpy.uint8)
+	    	x_offset=y_offset=0
+			
+	    	s_img = cv2.cvtColor(numpy.array(pic), cv2.COLOR_RGB2BGR)
+	    	if (s_img.shape[0] > s_img.shape[1]):
+	    		s_img = imutils.resize(s_img, height=y)
+	    	else:
+	    		s_img = imutils.resize(s_img, width=x)
+	    	x_offset = (x-s_img.shape[1])//2
+	    	y_offset = (y-s_img.shape[0])//2
+	    	l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
+
+	    	for _ in range(seconds_per_image * fps):
+	    		vw.write(l_img)
+
+	    vw.release()
 		
-# cd = getcwd()
 
-mypath = getcwd() + "/days_images"
-start_time = "2019:10:27 04:20:00"
-font_path = '/System/Library/Fonts/LucidaGrande.ttc'
-
-im = ImageTagger(images_path=mypath, start_time=start_time, font_path=font_path)
-
-im.tag_and_show()
 
 
 
