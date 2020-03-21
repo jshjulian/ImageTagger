@@ -22,8 +22,11 @@ class ImageTagger():
 		for pic in dir_of_pics:
 			if pic.split('.')[-1].lower() == 'jpg' or pic.split('.')[-1].lower() == 'jpeg' or pic.split('.')[-1].lower() == 'png':
 				image = Image.open(self.images_path+'/'+pic)
-				ordered_pics.append(image)
-				# print(image.getexif()[306])
+				try:
+					image.getexif()[306]
+					ordered_pics.append(image)
+				except:
+					continue
 		ordered_pics.sort(key=lambda x: x.getexif()[306])
 		return ordered_pics
 
@@ -111,8 +114,10 @@ class ImageTagger():
 	    vw = cv2.VideoWriter(outfile_name + '.avi', fourcc, fps, (x,y))
 	    
 
-	    for pic in list_of_pics:
-	    	print (pic)
+	    for i in range(len(list_of_pics)):
+	    	pic = list_of_pics[i]
+	    	print (i+1)
+
 	    	l_img = numpy.zeros((y,x,3), numpy.uint8)
 	    	x_offset=y_offset=0
 			
