@@ -100,8 +100,8 @@ class ImageTagger():
 	def tag_and_show(self):
 		self._show_pics(self._tag_images(self._get_images()))
 
-	def slideshow(self, outfile_name, seconds_per_image = 1, fps=60):
-	    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+	def slideshow(self, four_letter, outfile_name, seconds_per_image = 1, fps=60):
+	    fourcc = cv2.VideoWriter_fourcc(*four_letter)
 
 	    x = 0
 	    y = 0
@@ -111,7 +111,7 @@ class ImageTagger():
 	    		x = pic.size[0]
 	    	if (pic.size[1] > y):
 	    		y = pic.size[1]
-	    vw = cv2.VideoWriter(outfile_name + '.avi', fourcc, fps, (x,y))
+	    vw = cv2.VideoWriter(outfile_name, fourcc, fps, (x,y))
 	    
 
 	    for i in range(len(list_of_pics)):
@@ -134,7 +134,7 @@ class ImageTagger():
 	    		vw.write(l_img)
 
 	    vw.release()
-		
+
 
 
 
