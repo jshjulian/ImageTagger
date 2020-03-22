@@ -14,6 +14,7 @@ class ImageTagger():
 		self.time = start_time
 		self.images_path = images_path
 		self.font_path = font_path
+		self.images = None
 		
 	def _get_images(self):
 		dir_of_pics = [f for f in listdir(self.images_path) if isfile(join(self.images_path, f))]
@@ -28,6 +29,7 @@ class ImageTagger():
 				except:
 					continue
 		ordered_pics.sort(key=lambda x: x.getexif()[306])
+		self.images = ordered_pics
 		return ordered_pics
 
 	def _tag_images(self, list_of_pics):
@@ -89,7 +91,7 @@ class ImageTagger():
 			draw.text((x-1, y+1),dif_text,(0,0,0), font=font)
 			draw.text((x+1, y+1),dif_text,(0,0,0), font=font)
 			draw.text((x, y),dif_text,(255,255,0), font=font)
-
+		self.images = list_of_pics
 		return list_of_pics
 
 	def _show_pics(self, list_of_pics):
@@ -98,14 +100,18 @@ class ImageTagger():
 			im.close()
 
 	def tag_and_show(self):
-		self._show_pics(self._tag_images(self._get_images()))
+		self._tag_images(self._get_images())
+		self._show_pics(self.images)
 
-	def slideshow(self, four_letter, outfile_name, seconds_per_image = 1, fps=60):
+	def slideshow(self, four_letter, outfile_name, seconds_per_image = 1, fps=1):
 	    fourcc = cv2.VideoWriter_fourcc(*four_letter)
 
 	    x = 0
 	    y = 0
-	    list_of_pics = self._tag_images(self._get_images())
+	    if self.images == None:
+	    	list_of_pics = self._tag_images(self._get_images())
+	    else:
+	    	list_of_pics = self.images
 	    for pic in list_of_pics:
 	    	if (pic.size[0] > x):
 	    		x = pic.size[0]
