@@ -103,43 +103,45 @@ class ImageTagger():
 		self._tag_images(self._get_images())
 		self._show_pics(self.images)
 
-	def slideshow(self, four_letter, outfile_name, seconds_per_image = 1, fps=1):
-	    fourcc = cv2.VideoWriter_fourcc(*four_letter)
+	def slideshow(self, outfile_name, seconds_per_image = 1):
+		four_letter = "XVID"
+		fourcc = cv2.VideoWriter_fourcc(*four_letter)
+		fps = 1
 
-	    x = 0
-	    y = 0
-	    if self.images == None:
-	    	list_of_pics = self._tag_images(self._get_images())
-	    else:
-	    	list_of_pics = self.images
-	    for pic in list_of_pics:
-	    	if (pic.size[0] > x):
-	    		x = pic.size[0]
-	    	if (pic.size[1] > y):
-	    		y = pic.size[1]
-	    vw = cv2.VideoWriter(outfile_name, fourcc, fps, (x,y))
-	    
+		x = 0
+		y = 0
+		if self.images == None:
+			list_of_pics = self._tag_images(self._get_images())
+		else:
+			list_of_pics = self.images
+		for pic in list_of_pics:
+			if (pic.size[0] > x):
+				x = pic.size[0]
+			if (pic.size[1] > y):
+				y = pic.size[1]
+		vw = cv2.VideoWriter(outfile_name, fourcc, fps, (x,y))
+		
 
-	    for i in range(len(list_of_pics)):
-	    	pic = list_of_pics[i]
-	    	print (i+1)
+		for i in range(len(list_of_pics)):
+			pic = list_of_pics[i]
+			print (i+1)
 
-	    	l_img = numpy.zeros((y,x,3), numpy.uint8)
-	    	x_offset=y_offset=0
+			l_img = numpy.zeros((y,x,3), numpy.uint8)
+			x_offset=y_offset=0
 			
-	    	s_img = cv2.cvtColor(numpy.array(pic), cv2.COLOR_RGB2BGR)
-	    	if (s_img.shape[0] > s_img.shape[1]):
-	    		s_img = imutils.resize(s_img, height=y)
-	    	else:
-	    		s_img = imutils.resize(s_img, width=x)
-	    	x_offset = (x-s_img.shape[1])//2
-	    	y_offset = (y-s_img.shape[0])//2
-	    	l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
+			s_img = cv2.cvtColor(numpy.array(pic), cv2.COLOR_RGB2BGR)
+			if (s_img.shape[0] > s_img.shape[1]):
+				s_img = imutils.resize(s_img, height=y)
+			else:
+				s_img = imutils.resize(s_img, width=x)
+			x_offset = (x-s_img.shape[1])//2
+			y_offset = (y-s_img.shape[0])//2
+			l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
 
-	    	for _ in range(seconds_per_image * fps):
-	    		vw.write(l_img)
+			for _ in range(seconds_per_image * fps):
+				vw.write(l_img)
 
-	    vw.release()
+		vw.release()
 
 
 
